@@ -9,14 +9,11 @@ y = np.genfromtxt("data/y.csv", dtype=np.float32, delimiter=",")
 x_train = x
 y_train = y
 
-x_test = x[::10]
-y_test = y[::10]
+x_test = x[12500:]
+y_test = y[12500:]
 
 model = keras.Sequential()
-model.add(keras.Input(shape=(74)))
-model.add(layers.Dense(512, activation="relu"))
-model.add(layers.Dense(256, activation="relu"))
-model.add(layers.Dense(128, activation="relu"))
+model.add(keras.Input(shape=(124)))
 model.add(layers.Dense(64, activation="relu"))
 model.add(layers.Dense(32, activation="relu"))
 model.add(layers.Dense(1))
@@ -29,7 +26,7 @@ model.compile(
     metrics=["accuracy", "mean_squared_error"]
 )
 
-model.fit(x_train, y_train, batch_size=5, epochs=100, verbose=2)
-model.evaluate(x_test, y_test, batch_size=5, verbose=2)
+model.fit(x_train, y_train, batch_size=10, epochs=100, verbose=2)
+model.evaluate(x_test, y_test, batch_size=10, verbose=2)
 
 models.save_model(model, "model")

@@ -9,9 +9,19 @@ model = models.load_model("model", compile = True)
 
 # Stored in arrays so each word is mapped to a number (the index)
 types = ["TV", "Movie", "OVA", "ONA", "Special", "Music", "Unknown"]
-sources = ["4-koma manga", "Book", "Card game", "Digital manga", "Game", "Light novel", "Manga", "Music", "Novel", "Original", "Picture book", "Radio", "Visual novel", "Web manga", "Other", "Unknown"]
+sources = ["4-koma manga", "Book", "Card game", "Digital manga", "Game", "Light novel", "Manga", "Music", "Novel", "Original",
+           "Picture book", "Radio", "Visual novel", "Web manga", "Other", "Unknown"]
 ratings = ["G - All Ages", "PG - Children", "PG-13 - Teens 13 or older", "R - 17+ (violence & profanity)", "R+ - Mild Nudity", "Rx - Hentai", "None"]
-genres = ["Action", "Adventure", "Cars", "Comedy", "Dementia", "Demons", "Drama", "Ecchi", "Fantasy", "Game", "Harem", "Hentai", "Historical", "Horror", "Josei", "Kids", "Magic", "Martial Arts", "Mecha", "Military", "Music", "Mystery", "Parody", "Police", "Psychological", "Romance", "Samurai", "School", "Sci-Fi", "Seinen", "Shoujo", "Shoujo Ai", "Shounen", "Shounen Ai", "Slice of Life", "Space", "Sports", "Super Power", "Supernatural", "Thriller", "Vampire", "Yaoi", "Yuri"]
+genres = ["Action", "Adventure", "Cars", "Comedy", "Dementia", "Demons", "Drama", "Ecchi", "Fantasy", "Game",
+          "Harem", "Hentai", "Historical", "Horror", "Josei", "Kids", "Magic", "Martial Arts", "Mecha", "Military",
+          "Music", "Mystery", "Parody", "Police", "Psychological", "Romance", "Samurai", "School", "Sci-Fi", "Seinen",
+          "Shoujo", "Shoujo Ai", "Shounen", "Shounen Ai", "Slice of Life", "Space", "Sports", "Super Power", "Supernatural", "Thriller",
+          "Vampire", "Yaoi", "Yuri"]
+studios = ["Toei Animation", "Sunrise", "Production I.G", "J.C.Staff", "Madhouse", "TMS Entertainment", "Studio Deen", "Studio Pierrot", "OLM", "Nippon Animation",
+           "A-1 Pictures", "DLE", "Shin-Ei Animation", "Tastunoko Production", "Xebec", "Gonzo", "Bones", "Shaft", "Kyoto Animation", "Satelight",
+           "Silver Link.", "Brain&#039;s Base", "Production Reed", "Gainax", "Doga Kobo", "Arms", "Magic Bus", "Mushi Production", "Zexcs", "Studio 4Â°C",
+           "LIDENFILMS", "Seven", "Studio Hibari", "feel.", "ufotable", "Studio Comet", "Gallop", "MAPPA", "Kachidoki Studio", "Haoliners Animation League",
+           "Ajia-Do", "Studio Ghibli", "Wit Studio", "Lerche", "TNK", "P.A. Works", "Diomedea", "Artland", "Asahi Production", "Actas"]
 
 jikan = jikanpy.Jikan()
 
@@ -32,32 +42,35 @@ while True:
         a = jikan.anime(request)
 
         # Gets data of requested anime
-        x = np.zeros(shape=(1, 74), dtype=np.float32)
+        x = np.zeros(shape=(1, 124), dtype=np.float32)
         try:
-            x[0][0] = a["episodes"]
+            x[0][0 + types.index(a["type"])] = 1
         except (KeyError, TypeError):
             pass
         try:
-            x[0][1 + types.index(a["type"])] = 1
+            x[0][7 + sources.index(a["source"])] = 1
         except (KeyError, TypeError):
             pass
         try:
-            x[0][8 + sources.index(a["source"])] = 1
-        except (KeyError, TypeError):
-            pass
-        try:
-            x[0][24 + ratings.index(a["rating"])] = 1
+            x[0][23 + ratings.index(a["rating"])] = 1
         except (KeyError, TypeError):
             pass
         try:
             for genre in a["genres"]:
                 if genre != "":
-                    x[0][31 + genres.index(genre["name"])] = 1
+                    x[0][30 + genres.index(genre["name"])] = 1
         except (KeyError, TypeError):
             pass
-
-        # Normalizes first element in x to between 0 and 1
-        x[0][0] = -10**(-0.01 * x[0][0]) + 1
+        try:
+            matched_studio = False
+            for studio in a["studios"]:
+                if studio != "":
+                    x[0][73 + studios.index(studio["name"])] = 1
+                    matched_studio = True
+            if not matched_studio:
+                x[i][123] = 1
+        except (KeyError, TypeError):
+            pass
 
         # Prints requested anime's title
         try:
