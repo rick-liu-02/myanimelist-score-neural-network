@@ -64,7 +64,7 @@ while True:
         try:
             matched_studio = False
             for studio in a["studios"]:
-                if studio != "":
+                if studio != "" and studio in studios:
                     x[0][73 + studios.index(studio["name"])] = 1
                     matched_studio = True
             if not matched_studio:
