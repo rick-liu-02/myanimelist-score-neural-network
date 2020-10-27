@@ -22,7 +22,7 @@ for i in range(len(data_in)):
     x[i][24 + ratings.index(str(data_in[i][3]).lstrip("b'").rstrip("'"))] = 1
     # Columns 31 to 73 store genre
     for genre in [genre.strip() for genre in str(data_in[i][5]).lstrip("b'").rstrip("'").split(";")]:
-        if genre != '':
+        if genre != "":
             x[i][31 + genres.index(genre)] = 1
 
     # y
@@ -30,15 +30,8 @@ for i in range(len(data_in)):
     y[i] = float(str(data_in[i][4]).lstrip("b'").rstrip("'"))
 
 # Normalizes first column in x to between 0 and 1
-min = x[0][0]
-max = x[0][0]
 for row in x:
-    if row[0] < min:
-        min = row[0]
-    if row[0] > max:
-        max = row[0]
-for i in range(len(x)):
-    x[i][0] = (x[i][0] - min) / (max - min)
+    row[0] = -10**(-0.01 * row[0]) + 1
 
 np.savetxt("x.csv", x, delimiter=",")
 np.savetxt("y.csv", y, delimiter=",")

@@ -26,7 +26,7 @@ model.compile(
     metrics=["accuracy", "mean_squared_error"]
 )
 
-model.fit(x_train, y_train, batch_size=10, epochs=100, verbose=2)
+model.fit(x_train, y_train, batch_size=10, epochs=25, verbose=2)
 model.evaluate(x_test, y_test, batch_size=10, verbose=2)
 
 models.save_model(model, "model")
