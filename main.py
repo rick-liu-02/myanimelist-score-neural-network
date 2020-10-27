@@ -59,8 +59,14 @@ while True:
         # Normalizes first element in x to between 0 and 1
         x[0][0] = -10**(-0.01 * x[0][0]) + 1
 
+        # Prints requested anime's title
+        try:
+            print("\nTitle: {}".format(a["title"]))
+        except (KeyError, TypeError):
+            print("\nTitle: N/A")
+
         prediction = model.predict([x])
-        print("\nPredicted Score: {:.2f}".format(prediction[0][0]))
+        print("Predicted Score: {:.2f}".format(prediction[0][0]))
 
         # Prints actual score if available
         try:
