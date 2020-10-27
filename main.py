@@ -68,7 +68,7 @@ while True:
                     x[0][73 + studios.index(studio["name"])] = 1
                     matched_studio = True
             if not matched_studio:
-                x[123] = 1
+                x[0][123] = 1
         except (KeyError, TypeError):
             pass
 
