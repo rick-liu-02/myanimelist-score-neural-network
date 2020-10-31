@@ -1,14 +1,13 @@
 import numpy as np
 
 data_in = np.genfromtxt("raw_data.csv", dtype=np.object, delimiter=",")
-x = np.zeros(shape=(len(data_in), 124), dtype=np.float32)
+x = np.zeros(shape=(len(data_in), 117), dtype=np.float32)
 y = np.zeros(shape=(len(data_in)), dtype=np.float32)
 
 # Stored in arrays so each word is mapped to a number (the index)
 types = ["TV", "Movie", "OVA", "ONA", "Special", "Music", "Unknown"]
 sources = ["4-koma manga", "Book", "Card game", "Digital manga", "Game", "Light novel", "Manga", "Music", "Novel", "Original",
            "Picture book", "Radio", "Visual novel", "Web manga", "Other", "Unknown"]
-ratings = ["G - All Ages", "PG - Children", "PG-13 - Teens 13 or older", "R - 17+ (violence & profanity)", "R+ - Mild Nudity", "Rx - Hentai", "None"]
 genres = ["Action", "Adventure", "Cars", "Comedy", "Dementia", "Demons", "Drama", "Ecchi", "Fantasy", "Game",
           "Harem", "Hentai", "Historical", "Horror", "Josei", "Kids", "Magic", "Martial Arts", "Mecha", "Military",
           "Music", "Mystery", "Parody", "Police", "Psychological", "Romance", "Samurai", "School", "Sci-Fi", "Seinen",
@@ -26,20 +25,18 @@ for i in range(len(data_in)):
     x[i][0 + types.index(str(data_in[i][1]).lstrip("b'").rstrip("'"))] = 1
     # Columns 7 to 22 store source
     x[i][7 + sources.index(str(data_in[i][2]).lstrip("b'").rstrip("'"))] = 1
-    # Columns 23 to 29 store rating
-    x[i][23 + ratings.index(str(data_in[i][3]).lstrip("b'").rstrip("'"))] = 1
-    # Columns 30 to 72 store genre
-    for genre in [genre.strip() for genre in str(data_in[i][4]).lstrip("b'").rstrip("'").split(";")]:
+    # Columns 23 to 65 store genre
+    for genre in [genre.strip() for genre in str(data_in[i][3]).lstrip("b'").rstrip("'").split(";")]:
         if genre != "":
-            x[i][30 + genres.index(genre)] = 1
-    # Columns 73 to 123 store genre; column 123 is used if the studio does not match the 50 studios on the list
+            x[i][23 + genres.index(genre)] = 1
+    # Columns 66 to 116 store genre; column 116 is used if the studio does not match the 50 studios on the list
     matched_studio = False
-    for studio in [studio.strip() for studio in str(data_in[i][5]).lstrip("b'").rstrip("'").split(";")]:
+    for studio in [studio.strip() for studio in str(data_in[i][4]).lstrip("b'").rstrip("'").split(";")]:
         if studio != "" and studio in studios:
-            x[i][73 + studios.index(studio)] = 1
+            x[i][66 + studios.index(studio)] = 1
             matched_studio = True
     if not matched_studio:
-        x[i][123] = 1
+        x[i][116] = 1
 
     # y
     # Stores scores

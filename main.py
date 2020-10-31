@@ -11,7 +11,6 @@ model = models.load_model("model", compile = True)
 types = ["TV", "Movie", "OVA", "ONA", "Special", "Music", "Unknown"]
 sources = ["4-koma manga", "Book", "Card game", "Digital manga", "Game", "Light novel", "Manga", "Music", "Novel", "Original",
            "Picture book", "Radio", "Visual novel", "Web manga", "Other", "Unknown"]
-ratings = ["G - All Ages", "PG - Children", "PG-13 - Teens 13 or older", "R - 17+ (violence & profanity)", "R+ - Mild Nudity", "Rx - Hentai", "None"]
 genres = ["Action", "Adventure", "Cars", "Comedy", "Dementia", "Demons", "Drama", "Ecchi", "Fantasy", "Game",
           "Harem", "Hentai", "Historical", "Horror", "Josei", "Kids", "Magic", "Martial Arts", "Mecha", "Military",
           "Music", "Mystery", "Parody", "Police", "Psychological", "Romance", "Samurai", "School", "Sci-Fi", "Seinen",
@@ -42,7 +41,7 @@ while True:
         a = jikan.anime(request)
 
         # Gets data of requested anime
-        x = np.zeros(shape=(1, 124), dtype=np.float32)
+        x = np.zeros(shape=(1, 117), dtype=np.float32)
         try:
             x[0][0 + types.index(a["type"])] = 1
         except (KeyError, TypeError):
@@ -52,23 +51,19 @@ while True:
         except (KeyError, TypeError):
             pass
         try:
-            x[0][23 + ratings.index(a["rating"])] = 1
-        except (KeyError, TypeError):
-            pass
-        try:
             for genre in a["genres"]:
                 if genre != "":
-                    x[0][30 + genres.index(genre["name"])] = 1
+                    x[0][23 + genres.index(genre["name"])] = 1
         except (KeyError, TypeError):
             pass
         try:
             matched_studio = False
             for studio in a["studios"]:
-                if studio != "" and studio in studios:
-                    x[0][73 + studios.index(studio["name"])] = 1
+                if studio != "" and studio["name"] in studios:
+                    x[0][66 + studios.index(studio["name"])] = 1
                     matched_studio = True
             if not matched_studio:
-                x[0][123] = 1
+                x[0][116] = 1
         except (KeyError, TypeError):
             pass
 
